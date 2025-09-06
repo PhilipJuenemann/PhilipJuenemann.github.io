@@ -1,126 +1,44 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <title>My Portfolio</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Philip Juenemann - Portfolio</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/shared.css">
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: url('background.png') center center / cover no-repeat fixed;
-            min-height: 100vh;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            padding: 20px;
-        }
-
-        .container {
-            background: rgba(255, 255, 255, 0.95);
-            backdrop-filter: blur(10px);
-            border-radius: 20px;
-            padding: 40px;
-            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
-            max-width: 800px;
-            width: 100%;
-            text-align: center;
-        }
-
-        h1 {
-            color: #333;
-            font-size: 2.5rem;
-            margin-bottom: 40px;
-            font-weight: 700;
-            background: linear-gradient(135deg, #667eea, #764ba2);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-        }
-
-        .projects-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 30px;
-            margin-top: 30px;
-        }
-
-        .project-card {
-            background: white;
-            border-radius: 15px;
-            padding: 30px 20px;
-            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
-            transition: all 0.3s ease;
-            border: 2px solid transparent;
-        }
-
-        .project-card:hover {
-            transform: translateY(-10px);
-            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
-            border-color: #667eea;
-        }
-
-        .project-card a {
-            text-decoration: none;
-            color: #333;
-            font-size: 1.2rem;
-            font-weight: 600;
-            display: block;
-            padding: 15px 25px;
-            border-radius: 10px;
-            background: linear-gradient(135deg, #667eea, #764ba2);
-            color: white;
-            transition: all 0.3s ease;
-        }
-
-        .project-card a:hover {
-            background: linear-gradient(135deg, #5a6fd8, #6a4190);
-            transform: scale(1.05);
-        }
-
-        .project-number {
-            font-size: 3rem;
-            font-weight: bold;
-            color: #667eea;
-            margin-bottom: 10px;
-        }
-
-        .project-description {
-            color: #666;
-            margin-bottom: 20px;
-            font-size: 0.9rem;
-        }
-
-        @media (max-width: 768px) {
-            .container {
-                padding: 30px 20px;
-            }
-
-            h1 {
-                font-size: 2rem;
-            }
-
-            .projects-grid {
-                grid-template-columns: 1fr;
-                gap: 20px;
-            }
+        /* Page-specific styles */
+        .project-description a {
+            color: var(--gray-600);
+            text-decoration: underline;
         }
     </style>
 </head>
 <body>
     <div class="container">
-        <h1>Philip Juenemann's CS180 Portfolio</h1>
+        <div id="sidebar-container"></div>
 
-        <div class="projects-grid">
-            <div class="project-card">
-                <div class="project-number">Project 0</div>
-                <div class="project-description">Dolly Zoom</div>
-                <a href="./proj0/index.html">Project 0</a>
-            </div>
-        </div>
+        <main class="main-content">
+            <div id="portfolio-header"></div>
+
+            <section class="projects-section">
+                <p class="project-description">This site hosts Philip's completed computer science projects from CS 180: Intro to Computer Vision and Computational Photography at UC Berkeley, taught by Angjoo Kanazawa and Alexei (Alyosha) Efros.</p>
+
+                <br>
+
+                <p class="project-description">CS 180 is an advanced undergraduate course focused on computing with visual data, covering image processing, computer vision, and computational photography. The course emphasizes hands-on learning through programming projects where students acquire their own images and develop image analysis and synthesis tools from scratch.</p>
+
+                <br>
+
+                <p class="project-description">You can contact me at <a href="mailto:philip.juenemann@berkeley.edu">philip.juenemann@berkeley.edu</a>.</p>
+            </section>
+
+            <div id="footer-container"></div>
+        </main>
     </div>
+
+    <script src="js/component-loader.js"></script>
 </body>
 </html>

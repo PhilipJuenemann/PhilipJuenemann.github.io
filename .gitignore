@@ -39,7 +39,7 @@ wheels/
 # Large image files
 *.tif
 *.tiff
-*.gif
+.gif
 *.heic
 *.raw
 *.cr2

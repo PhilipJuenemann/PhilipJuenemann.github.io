@@ -1,170 +1,99 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <title>Project 0 - Philip Juenemann</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Project 0 - Dolly Zoom | Philip Juenemann</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../css/shared.css">
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
+        /* Page-specific styles */
+        .gifs-section {
+            margin-top: 60px;
         }
 
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: url('../background.png') center center / cover no-repeat fixed;
-            min-height: 100vh;
-            padding: 20px;
+        .gif-item {
+            margin-bottom: 60px;
         }
 
-        .container {
-            max-width: 1200px;
-            margin: 0 auto;
-            background: rgba(255, 255, 255, 0.95);
-            backdrop-filter: blur(10px);
-            border-radius: 20px;
-            padding: 40px;
-            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+        .gif-item:last-child {
+            margin-bottom: 0;
         }
 
-        h1 {
-            color: #333;
-            font-size: 2.5rem;
-            margin-bottom: 20px;
-            font-weight: 700;
-            text-align: center;
-            background: linear-gradient(135deg, #667eea, #764ba2);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-        }
-
-        .description {
-            text-align: center;
-            color: #666;
-            font-size: 1.1rem;
-            margin-bottom: 40px;
-            line-height: 1.6;
-        }
-
-        .gifs-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 30px;
-            margin: 40px 0;
-        }
-
-        .gif-card {
-            background: white;
-            border-radius: 15px;
-            padding: 20px;
-            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
-            transition: all 0.3s ease;
-            border: 2px solid transparent;
-        }
-
-        .gif-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.15);
-            border-color: #667eea;
-        }
-
-        .gif-card img {
-            width: 100%;
+        .gif-image {
+            width: 35%;
             height: auto;
-            border-radius: 12px;
-            box-shadow: 0 6px 16px rgba(0, 0, 0, 0.1);
-            transition: transform 0.3s ease;
-        }
-
-        .gif-card img {
-            width: 100%;
-            height: 500px;
-            object-fit: cover;
-            border-radius: 12px;
-            box-shadow: 0 6px 16px rgba(0, 0, 0, 0.1);
-            transition: transform 0.3s ease;
-        }
-
-        .gif-card:hover img {
-            transform: scale(1.02);
+            border-radius: 8px;
+            margin: 0 auto 16px auto;
+            border: 1px solid var(--gray-200);
+            display: block;
         }
 
         .gif-title {
-            text-align: center;
-            margin-top: 15px;
-            font-weight: 600;
-            color: #333;
-            font-size: 1.1rem;
+            font-size: 1.25rem;
+            font-weight: 500;
+            color: var(--black);
+            margin-bottom: 8px;
         }
 
-        .back-link {
-            text-align: center;
-            margin-top: 40px;
-        }
-
-        .back-link a {
-            display: inline-block;
-            padding: 15px 30px;
-            background: linear-gradient(135deg, #667eea, #764ba2);
-            color: white;
-            text-decoration: none;
-            border-radius: 25px;
-            font-weight: 600;
-            transition: all 0.3s ease;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
-        }
-
-        .back-link a:hover {
-            background: linear-gradient(135deg, #5a6fd8, #6a4190);
-            transform: translateY(-2px);
-            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
-        }
-
-        @media (max-width: 768px) {
-            .container {
-                padding: 30px 20px;
-            }
-
-            h1 {
-                font-size: 2rem;
-            }
-
-            .gifs-grid {
-                grid-template-columns: 1fr;
-                gap: 20px;
-            }
-
-            .description {
-                font-size: 1rem;
-            }
+        .gif-description {
+            font-size: 0.875rem;
+            color: var(--gray-600);
+            line-height: 1.5;
         }
     </style>
 </head>
 <body>
     <div class="container">
-        <h1>Project 0 - Dolly Zoom</h1>
-        <p class="description">Welcome to my Project 0! Explore my Gifs!</p>
+        <div id="sidebar-container"></div>
 
-        <div class="gifs-grid">
-            <div class="gif-card">
-                <img src="philip_juenemann.GIF" alt="Philip Juenemann GIF" />
-                <div class="gif-title">Part 1: Philip Juenemann</div>
-            </div>
+        <main class="main-content">
+            <div id="project-header"></div>
 
-            <div class="gif-card">
-                <img src="brunnen.GIF" alt="Fountain GIF" />
-                <div class="gif-title">Part 2: Fountain</div>
-            </div>
+            <section class="gifs-section">
+                <h2 class="section-title">Project Gallery</h2>
 
-            <div class="gif-card">
-                <img src="statue.GIF" alt="Statue GIF" />
-                <div class="gif-title">Part 3: Statue</div>
-            </div>
-        </div>
+                <div class="gif-item">
+                    <h3 class="gif-title">Part 1: Philip Juenemann</h3>
+                    <p class="gif-description">A self-portrait demonstrating the dolly zoom effect, where the camera moves forward while simultaneously zooming out to maintain the subject's size while dramatically changing the background perspective.</p>
+                    <div class="section-divider"></div>
+                    <img src="philip_juenemann.GIF" alt="Philip Juenemann Dolly Zoom" class="gif-image" />
+                </div>
 
-        <div class="back-link">
-            <a href="../index.html">Back to Portfolio</a>
-        </div>
+                <div class="gif-item">
+                    <h3 class="gif-title">Part 2: Fountain</h3>
+                    <p class="gif-description">The dolly zoom effect applied to a fountain scene, creating a disorienting visual effect where the background appears to stretch and compress while the central subject remains stable.</p>
+                    <div class="section-divider"></div>
+                    <img src="brunnen.GIF" alt="Fountain Dolly Zoom" class="gif-image" />
+                </div>
+
+                <div class="gif-item">
+                    <h3 class="gif-title">Part 3: Statue</h3>
+                    <p class="gif-description">A statue captured with the dolly zoom technique, showcasing how the effect can create dramatic tension and focus attention on the central subject while the environment transforms around it.</p>
+                    <div class="section-divider"></div>
+                    <img src="statue.GIF" alt="Statue Dolly Zoom" class="gif-image" />
+                </div>
+            </section>
+
+            <div id="footer-container"></div>
+        </main>
     </div>
+
+    <script src="../js/component-loader.js"></script>
+    <script>
+        // Update project-specific data after components load
+        document.addEventListener('DOMContentLoaded', () => {
+            setTimeout(() => {
+                componentLoader.loadProjectHeader({
+                    title: 'Dolly Zoom',
+                    breadcrumb: 'Project 0',
+                    publishDate: 'August 31, 2025',
+                    description: 'A computer vision project exploring the dolly zoom effect through creative GIF animations and image processing techniques.'
+                });
+            }, 100);
+        });
+    </script>
 </body>
 </html>

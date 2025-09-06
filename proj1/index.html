@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Project 1 - Colorization | Philip Juenemann</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../css/shared.css">
+    <style>
+        /* Page-specific styles */
+        .project-gallery {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 40px;
+            margin-top: 40px;
+        }
+
+        .gallery-item {
+            text-align: center;
+        }
+
+        .gallery-image {
+            width: 100%;
+            height: auto;
+            border-radius: 8px;
+            margin-bottom: 16px;
+            border: 1px solid var(--gray-200);
+        }
+
+        .gallery-title {
+            font-size: 1.125rem;
+            font-weight: 500;
+            color: var(--black);
+            margin-bottom: 8px;
+        }
+
+        .gallery-description {
+            font-size: 0.875rem;
+            color: var(--gray-600);
+            line-height: 1.5;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div id="sidebar-container"></div>
+
+        <main class="main-content">
+            <div id="project-header"></div>
+
+            <section class="project-gallery">
+                <h2 class="section-title">Project Gallery</h2>
+
+            </section>
+
+            <div id="footer-container"></div>
+        </main>
+    </div>
+
+    <script src="../js/component-loader.js"></script>
+    <script>
+        // Update project-specific data after components load
+        document.addEventListener('DOMContentLoaded', () => {
+            setTimeout(() => {
+                componentLoader.loadProjectHeader({
+                    title: 'Colorization',
+                    breadcrumb: 'Project 1',
+                    publishDate: 'September 5, 2025',
+                    description: 'An image colorization project using deep learning techniques to automatically add realistic colors to grayscale images, exploring the intersection of computer vision and artistic interpretation.'
+                });
+            }, 100);
+        });
+    </script>
+</body>
+</html>
