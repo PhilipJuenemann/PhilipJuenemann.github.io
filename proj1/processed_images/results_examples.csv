@@ -1,0 +1,4 @@
+image,method,dx_g,dy_g,dx_r,dy_r,time_sec,out_path
+Bashkirka,edges_ed_pyramid,-4,60,-21,130,10.259398,processed_images/Bashkirka.jpg
+Pinkhus,edges_ed_pyramid,-23,54,-57,108,8.364927,processed_images/Pinkhus.jpg
+Pozharnai,edges_ed_pyramid,17,21,31,146,7.532689,processed_images/Pozharnai.jpg

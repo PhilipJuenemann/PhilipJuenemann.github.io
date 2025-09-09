@@ -1,0 +1,12 @@
+image,method,dx_g,dy_g,dx_r,dy_r,time_sec,out_path
+church,edges_ed_pyramid,4,25,-4,58,7.752720,processed_images/church.jpg
+emir,edges_ed_pyramid,23,49,40,107,6.700628,processed_images/emir.jpg
+harvesters,edges_ed_pyramid,17,60,13,123,6.698051,processed_images/harvesters.jpg
+icon,edges_ed_pyramid,17,42,23,90,6.896455,processed_images/icon.jpg
+italil,edges_ed_pyramid,22,38,36,77,6.969892,processed_images/italil.jpg
+lastochikino,edges_ed_pyramid,-2,-3,-8,75,6.936932,processed_images/lastochikino.jpg
+lugano,edges_ed_pyramid,-17,41,-29,92,6.852634,processed_images/lugano.jpg
+melons,edges_ed_pyramid,10,80,13,151,6.535036,processed_images/melons.jpg
+self_portrait,edges_ed_pyramid,29,78,35,155,6.195093,processed_images/self_portrait.jpg
+siren,edges_ed_pyramid,-6,49,-25,96,5.681967,processed_images/siren.jpg
+three_generations,edges_ed_pyramid,13,54,9,111,5.764189,processed_images/three_generations.jpg

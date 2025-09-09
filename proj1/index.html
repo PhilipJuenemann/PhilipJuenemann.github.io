@@ -10,36 +10,109 @@
     <link rel="stylesheet" href="../css/shared.css">
     <style>
         /* Page-specific styles */
-        .project-gallery {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 40px;
+        .project-content {
             margin-top: 40px;
         }
 
-        .gallery-item {
-            text-align: center;
+        .subsection-title {
+            font-size: 1.25rem;
+            font-weight: 500;
+            color: var(--black);
+            margin: 32px 0 16px 0;
         }
 
-        .gallery-image {
-            width: 100%;
-            height: auto;
-            border-radius: 8px;
-            margin-bottom: 16px;
-            border: 1px solid var(--gray-200);
-        }
-
-        .gallery-title {
+        .method-subtitle {
             font-size: 1.125rem;
             font-weight: 500;
             color: var(--black);
-            margin-bottom: 8px;
+            margin: 24px 0 12px 0;
         }
 
-        .gallery-description {
+        .method-description {
             font-size: 0.875rem;
             color: var(--gray-600);
-            line-height: 1.5;
+            line-height: 1.6;
+            margin-bottom: 16px;
+        }
+
+        .image-container {
+            margin: 24px 0;
+            text-align: center;
+        }
+
+        .method-image {
+            width: 100%;
+            max-width: 600px;
+            height: auto;
+            border-radius: 8px;
+            border: 1px solid var(--gray-200);
+            margin-bottom: 12px;
+        }
+
+        .image-caption {
+            font-size: 0.8rem;
+            color: var(--gray-500);
+            font-style: italic;
+            margin-bottom: 0;
+        }
+
+        .results-table {
+            margin: 32px 0;
+            overflow-x: auto;
+        }
+
+        .image-results-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.875rem;
+        }
+
+        .image-results-table th,
+        .image-results-table td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid var(--gray-200);
+            vertical-align: top;
+        }
+
+        .image-results-table th {
+            background-color: var(--gray-100);
+            font-weight: 500;
+            color: var(--black);
+        }
+
+        .image-results-table td {
+            color: var(--gray-700);
+        }
+
+        .result-image {
+            width: 150px;
+            height: auto;
+            border-radius: 4px;
+            border: 1px solid var(--gray-200);
+        }
+
+        .image-results-table tbody tr:hover {
+            background-color: var(--gray-50);
+        }
+
+        @media (max-width: 768px) {
+            .image-results-table {
+                font-size: 0.75rem;
+            }
+
+            .image-results-table th,
+            .image-results-table td {
+                padding: 8px;
+            }
+
+            .result-image {
+                width: 100px;
+            }
+
+            .method-image {
+                max-width: 100%;
+            }
         }
     </style>
 </head>
@@ -50,9 +123,257 @@
         <main class="main-content">
             <div id="project-header"></div>
 
-            <section class="project-gallery">
-                <h2 class="section-title">Project Gallery</h2>
+            <section class="project-content">
+                <h2 class="section-title">Project Overview</h2>
+                <p class="project-description">
+                    This project focuses on automatic image colorization using alignment techniques on historical glass plate negatives from the Prokudin-Gorskii collection. The challenge was to align three separate color channel images (Blue, Green, Red) captured through different colored filters to create a single color photograph.
+                </p>
 
+                <div class="section-divider"></div>
+
+                <h2 class="section-title">Methodology</h2>
+
+                <h3 class="subsection-title">1. Initial Approach - Single-Scale Brute Force</h3>
+                <p class="method-description">
+                    The initial "stupid implementation" used a simple brute-force exhaustive search with Euclidean distance to align the color channels. This approach worked reasonably well for smaller images but failed on larger high-resolution images due to computational complexity and alignment accuracy issues.
+                </p>
+                <div class="image-container">
+                    <img src="web/stupid_implementation.png" alt="Stupid Implementation Results" class="method-image" />
+                    <p class="image-caption">Results from single-scale brute force alignment showing misalignment issues</p>
+                </div>
+
+                <h3 class="subsection-title">2. Image Preprocessing</h3>
+
+                <h4 class="method-subtitle">Cropping (10% border removal)</h4>
+                <p class="method-description">
+                    To improve alignment accuracy, I removed 10% of the image borders to eliminate noisy edges and artifacts that could interfere with the alignment process.
+                </p>
+                <div class="image-container">
+                    <img src="web/cropped.png" alt="Cropped Images" class="method-image" />
+                    <p class="image-caption">Images after 10% border cropping to remove noise and artifacts</p>
+                </div>
+
+                <h4 class="method-subtitle">Downscaling for Pyramid Approach</h4>
+                <p class="method-description">
+                    For large images, I implemented a downscaling approach where images are reduced by factor 2 multiple times. This creates an image pyramid that enables coarse-to-fine alignment.
+                </p>
+                <div class="image-container">
+                    <img src="web/downscaled.png" alt="Downscaled Image" class="method-image" />
+                    <p class="image-caption">Image downscaled 5 times by factor 2, showing reduced resolution for pyramid alignment</p>
+                </div>
+
+                <h4 class="method-subtitle">Edge Detection with Sobel Gradients</h4>
+                <p class="method-description">
+                    Instead of aligning raw pixel values, I computed Sobel gradients to detect edges. Aligning based on edge information proved more robust and accurate than pixel-based alignment.
+                </p>
+                <div class="image-container">
+                    <img src="web/sobel_gradient.png" alt="Sobel Gradient" class="method-image" />
+                    <p class="image-caption">Sobel gradient computation highlighting edges for improved alignment accuracy</p>
+                </div>
+
+                <h3 class="subsection-title">3. Final Implementation - Pyramid Alignment</h3>
+                <p class="method-description">
+                    The final approach combines image pyramids with edge-based alignment using Euclidean distance. The algorithm starts at the coarsest level, finds the best alignment, then progressively refines the alignment at finer scales.
+                </p>
+
+                <div class="section-divider"></div>
+
+                <h2 class="section-title">Results</h2>
+
+                <h3 class="subsection-title">Small Images (Low Resolution)</h3>
+                <p class="method-description">
+                    These images were small enough to process quickly with the pyramid approach:
+                </p>
+
+                <div class="results-table">
+                    <table class="image-results-table">
+                        <thead>
+                            <tr>
+                                <th>Image</th>
+                                <th>Result</th>
+                                <th>Green Channel Displacement</th>
+                                <th>Red Channel Displacement</th>
+                                <th>Processing Time (s)</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><strong>Cathedral</strong></td>
+                                <td><img src="processed_images/cathedral.jpg" alt="Cathedral Result" class="result-image" /></td>
+                                <td>(2, 5)</td>
+                                <td>(3, 12)</td>
+                                <td>0.085</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Monastery</strong></td>
+                                <td><img src="processed_images/monastery.jpg" alt="Monastery Result" class="result-image" /></td>
+                                <td>(2, -3)</td>
+                                <td>(2, 3)</td>
+                                <td>0.072</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Tobolsk</strong></td>
+                                <td><img src="processed_images/tobolsk.jpg" alt="Tobolsk Result" class="result-image" /></td>
+                                <td>(3, 3)</td>
+                                <td>(3, 6)</td>
+                                <td>0.070</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <h3 class="subsection-title">Large Images (High Resolution)</h3>
+                <p class="method-description">
+                    These high-resolution images required the full pyramid approach for efficient processing:
+                </p>
+
+                <div class="results-table">
+                    <table class="image-results-table">
+                        <thead>
+                            <tr>
+                                <th>Image</th>
+                                <th>Result</th>
+                                <th>Green Channel Displacement</th>
+                                <th>Red Channel Displacement</th>
+                                <th>Processing Time (s)</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><strong>Church</strong></td>
+                                <td><img src="processed_images/church.jpg" alt="Church Result" class="result-image" /></td>
+                                <td>(4, 25)</td>
+                                <td>(-4, 58)</td>
+                                <td>7.75</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Emir</strong></td>
+                                <td><img src="processed_images/emir.jpg" alt="Emir Result" class="result-image" /></td>
+                                <td>(23, 49)</td>
+                                <td>(40, 107)</td>
+                                <td>6.70</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Harvesters</strong></td>
+                                <td><img src="processed_images/harvesters.jpg" alt="Harvesters Result" class="result-image" /></td>
+                                <td>(17, 60)</td>
+                                <td>(13, 123)</td>
+                                <td>6.70</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Icon</strong></td>
+                                <td><img src="processed_images/icon.jpg" alt="Icon Result" class="result-image" /></td>
+                                <td>(17, 42)</td>
+                                <td>(23, 90)</td>
+                                <td>6.90</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Lady (Italil)</strong></td>
+                                <td><img src="processed_images/italil.jpg" alt="Lady Result" class="result-image" /></td>
+                                <td>(22, 38)</td>
+                                <td>(36, 77)</td>
+                                <td>6.97</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Lastochikino</strong></td>
+                                <td><img src="processed_images/lastochikino.jpg" alt="Lastochikino Result" class="result-image" /></td>
+                                <td>(-2, -3)</td>
+                                <td>(-8, 75)</td>
+                                <td>6.94</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Lugano</strong></td>
+                                <td><img src="processed_images/lugano.jpg" alt="Lugano Result" class="result-image" /></td>
+                                <td>(-17, 41)</td>
+                                <td>(-29, 92)</td>
+                                <td>6.85</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Melons</strong></td>
+                                <td><img src="processed_images/melons.jpg" alt="Melons Result" class="result-image" /></td>
+                                <td>(10, 80)</td>
+                                <td>(13, 151)</td>
+                                <td>6.54</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Self Portrait</strong></td>
+                                <td><img src="processed_images/self_portrait.jpg" alt="Self Portrait Result" class="result-image" /></td>
+                                <td>(29, 78)</td>
+                                <td>(35, 155)</td>
+                                <td>6.20</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Siren</strong></td>
+                                <td><img src="processed_images/siren.jpg" alt="Siren Result" class="result-image" /></td>
+                                <td>(-6, 49)</td>
+                                <td>(-25, 96)</td>
+                                <td>5.68</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Three Generations</strong></td>
+                                <td><img src="processed_images/three_generations.jpg" alt="Three Generations Result" class="result-image" /></td>
+                                <td>(13, 54)</td>
+                                <td>(9, 111)</td>
+                                <td>5.76</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="section-divider"></div>
+
+                <h2 class="section-title">Additional Examples</h2>
+                <p class="method-description">
+                    Here are three additional examples I personally selected and processed to demonstrate the versatility of the alignment algorithm across different subjects and lighting conditions:
+                </p>
+
+                <div class="results-table">
+                    <table class="image-results-table">
+                        <thead>
+                            <tr>
+                                <th>Image</th>
+                                <th>Result</th>
+                                <th>Green Channel Displacement</th>
+                                <th>Red Channel Displacement</th>
+                                <th>Processing Time (s)</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><strong>Bashkirka</strong></td>
+                                <td><img src="processed_images/Bashkirka.jpg" alt="Bashkirka Result" class="result-image" /></td>
+                                <td>(-4, 60)</td>
+                                <td>(-21, 130)</td>
+                                <td>10.26</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Pinkhus</strong></td>
+                                <td><img src="processed_images/Pinkhus.jpg" alt="Pinkhus Result" class="result-image" /></td>
+                                <td>(-23, 54)</td>
+                                <td>(-57, 108)</td>
+                                <td>8.36</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Pozharnai</strong></td>
+                                <td><img src="processed_images/Pozharnai.jpg" alt="Pozharnai Result" class="result-image" /></td>
+                                <td>(17, 21)</td>
+                                <td>(31, 146)</td>
+                                <td>7.53</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <p class="method-description">
+                    These examples showcase the algorithm's ability to handle diverse subjects including portraits (Bashkirka, Pinkhus) and architectural scenes (Pozharnai). The varying displacement values demonstrate how different image content requires different alignment corrections, with the algorithm successfully adapting to each case.
+                </p>
+
+                <div class="section-divider"></div>
+
+                <h2 class="section-title">Conclusion</h2>
+                <p class="project-description">
+                    The pyramid-based alignment approach with edge detection successfully aligned all images, both small and large. The method proved robust across different image types and lighting conditions. The displacement values show the precise pixel-level adjustments needed to align the color channels, with larger images generally requiring larger displacement corrections due to their higher resolution and more complex alignment challenges.
+                </p>
             </section>
 
             <div id="footer-container"></div>
@@ -67,7 +388,7 @@
                 componentLoader.loadProjectHeader({
                     title: 'Colorization',
                     breadcrumb: 'Project 1',
-                    publishDate: 'September 5, 2025',
+                    publishDate: 'September 8, 2025',
                     description: 'An image colorization project using deep learning techniques to automatically add realistic colors to grayscale images, exploring the intersection of computer vision and artistic interpretation.'
                 });
             }, 100);
