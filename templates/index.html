@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Project X - Title | Philip Juenemann</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../css/shared.css">
+</head>
+<body>
+    <div class="container">
+        <div id="sidebar-container"></div>
+
+        <main class="main-content">
+            <div id="project-header"></div>
+
+
+            <!-- Main Page Content -->
+
+
+            <div id="footer-container"></div>
+        </main>
+    </div>
+
+    <script src="../js/component-loader.js"></script>
+    <script>
+        // Update project-specific data after components load
+        document.addEventListener('DOMContentLoaded', () => {
+            setTimeout(() => {
+                componentLoader.loadProjectHeader({
+                    title: 'Title',
+                    breadcrumb: 'Project X',
+                    publishDate: 'Month Day, Year',
+                    description: 'Add project description here'
+                });
+            }, 100);
+        });
+    </script>
+</body>
+</html>

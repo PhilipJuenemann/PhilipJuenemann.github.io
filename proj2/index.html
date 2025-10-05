@@ -1,0 +1,540 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Project 2 - Title | Philip Juenemann</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../css/shared.css">
+</head>
+<body>
+    <div class="container">
+        <div id="sidebar-container"></div>
+
+        <main class="main-content">
+            <div id="project-header"></div>
+
+            <!-- Main Page Content -->
+            <section class="content-section">
+                <h2 class="section-title">Part 1.1: Convolutions from Scratch</h2>
+
+                <div class="text-content">
+                    <p>In this project, we explore 2D convolutions and filtering by implementing convolution operations from scratch using only NumPy. We start with basic finite difference operators and progress to more complex filters like box filters.</p>
+
+                    <p>The goal is to build intuitions about how convolutions work by implementing them with nested loops, comparing results with built-in functions, and applying various filters to images.</p>
+                </div>
+
+                <div class="subsection">
+                    <h3 class="subsection-title">Implementation Approach</h3>
+                    <div class="text-content">
+                        <p>I implemented convolution in two ways:</p>
+                        <ul>
+                            <li><strong>Four nested loops:</strong> Direct implementation iterating over output pixels and kernel elements</li>
+                            <li><strong>Two nested loops:</strong> Optimized version using vectorized operations for inner dimensions</li>
+                            <li><strong>Zero padding:</strong> Added proper boundary handling to maintain output size</li>
+                        </ul>
+                        <p>Results were validated against <code>scipy.signal.convolve2d</code> to ensure correctness.</p>
+                    </div>
+                </div>
+
+                <div class="subsection">
+                    <h3 class="subsection-title">Original Image</h3>
+                    <div class="image-grid single">
+                        <div class="image-container">
+                            <img src="images/philip.png" alt="Original grayscale image" class="result-image">
+                            <p class="image-caption">Original grayscale image used for filtering experiments</p>
+                        </div>
+                    </div>
+                </div>
+
+
+
+                <div class="subsection">
+                    <h3 class="subsection-title">Finite Difference Operators</h3>
+                    <div class="text-content">
+                        <p>Applied finite difference operators D<sub>x</sub> and D<sub>y</sub> to detect edges in horizontal and vertical directions respectively. These operators highlight areas of rapid intensity change.</p>
+                    </div>
+
+                    <div class="image-grid">
+                        <div class="image-container">
+                            <img src="images/img_horizontal.png" alt="Horizontal gradient" class="result-image">
+                            <p class="image-caption">D<sub>x</sub> operator result - highlights vertical edges</p>
+                        </div>
+                        <div class="image-container">
+                            <img src="images/img_vertical.png" alt="Vertical gradient" class="result-image">
+                            <p class="image-caption">D<sub>y</sub> operator result - highlights horizontal edges</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="subsection">
+                  <h3 class="subsection-title">Box Filter Results</h3>
+                  <div class="text-content">
+                      <p>Applied a 9×9 box filter (averaging filter) to smooth the image. The box filter replaces each pixel with the average of its neighborhood, effectively blurring the image and reducing noise.</p>
+                  </div>
+                  <div class="image-grid single">
+                      <div class="image-container">
+                          <img src="images/box_filter.png" alt="Box filter result" class="result-image">
+                          <p class="image-caption">Result after applying 9×9 box filter - notice the smoothing effect</p>
+                      </div>
+                  </div>
+              </div>
+
+                <div class="subsection">
+                    <h3 class="subsection-title">Mathematical Foundation</h3>
+                    <div class="text-content">
+                        <p>The convolution operation is mathematically defined as:</p>
+                    </div>
+                    <div class="image-grid single">
+                        <div class="image-container">
+                            <img src="images/formula.png" alt="Convolution formula" class="formula-image">
+                            <p class="image-caption">2D convolution formula showing the relationship between input image, kernel, and output</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="subsection">
+                    <h3 class="subsection-title">Code Implementation</h3>
+                    <div class="text-content">
+                        <p>Here are the two convolution implementations:</p>
+
+                        <h4 class="code-section-title">Four Nested Loops Implementation</h4>
+                        <pre class="code-block"><code>def convolve_4forloops(image, kernel):
+    image = image.astype(np.float32)
+    H, W = image.shape
+    h, w = kernel.shape
+    pd_h, pd_w = h // 2, w // 2
+    k = np.flip(kernel, (0,1))  # flip for true convolution
+    padded = np.pad(image, ((pd_h, pd_h), (pd_w, pd_w)),
+                    mode='constant', constant_values=0)
+    out = np.empty((H, W), dtype=np.float32)
+    for x in range(H):
+        for y in range(W):
+            s = 0.0
+            for a in range(h):
+                for b in range(w):
+                    s += padded[x + a, y + b] * k[a, b]
+            out[x, y] = s
+    return out</code></pre>
+
+                        <h4 class="code-section-title">Two Nested Loops Implementation</h4>
+                        <pre class="code-block"><code>def convolve_2forloops(image, kernel):
+    image = image.astype(np.float32)
+    H, W = image.shape
+    h, w = kernel.shape
+    pd_h, pd_w = h // 2, w // 2
+    k = np.flip(kernel, (0,1))
+    padded = np.pad(image, ((pd_h, pd_h), (pd_w, pd_w)),
+                    mode='constant', constant_values=0)
+    out = np.empty((H, W), dtype=np.float32)
+    for x in range(H):
+        for y in range(W):
+            patch = padded[x:x+h, y:y+w]
+            out[x, y] = np.sum(patch * k)
+    return out</code></pre>
+                    </div>
+                </div>
+
+            </section>
+
+            <section class="content-section">
+                <h2 class="section-title">Part 1.2: Finite Difference Operator</h2>
+
+                <div class="text-content">
+                    <p>Moving beyond our basic implementation, we now explore edge detection using finite difference operators on the classic cameraman image. By computing partial derivatives and gradient magnitudes, we can identify edges and create binary edge maps.</p>
+                </div>
+
+                <div class="subsection">
+                    <h3 class="subsection-title">Partial Derivatives</h3>
+                    <div class="text-content">
+                        <p>Applied finite difference operators D<sub>x</sub> and D<sub>y</sub> to the cameraman image to compute partial derivatives. These highlight intensity changes in horizontal and vertical directions respectively.</p>
+                    </div>
+
+                    <div class="image-grid">
+                        <div class="image-container">
+                            <img src="images/cameraman_Ix.png" alt="Partial derivative in x" class="result-image">
+                            <p class="image-caption">I<sub>x</sub> - Partial derivative in x-direction</p>
+                        </div>
+                        <div class="image-container">
+                            <img src="images/cameraman_Iy.png" alt="Partial derivative in y" class="result-image">
+                            <p class="image-caption">I<sub>y</sub> - Partial derivative in y-direction</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="subsection">
+                    <h3 class="subsection-title">Gradient Magnitude and Edge Detection</h3>
+                    <div class="text-content">
+                        <p>The gradient magnitude combines both partial derivatives to show edge strength regardless of direction. By applying an appropriate threshold, we can create a binary edge image that suppresses noise while preserving real edges.</p>
+                    </div>
+
+                    <div class="image-grid">
+                        <div class="image-container">
+                            <img src="images/cameraman_grad_mag.png" alt="Gradient magnitude" class="result-image">
+                            <p class="image-caption">Gradient magnitude |∇I| = √(I<sub>x</sub>² + I<sub>y</sub>²)</p>
+                        </div>
+                        <div class="image-container">
+                            <img src="images/cameraman_edges_manual.png" alt="Binary edge image" class="result-image">
+                            <p class="image-caption">Binary edge image with manual threshold (t = 0.24)</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <section class="content-section">
+                <h2 class="section-title">Part 1.3: Derivative of Gaussian (DoG) Filter</h2>
+
+                <div class="text-content">
+                    <p>The finite difference approach produces noisy results. By first smoothing with a Gaussian filter, we can significantly improve edge detection quality. Even better, we can combine both operations into a single Derivative of Gaussian (DoG) filter.</p>
+                </div>
+
+                <div class="subsection">
+                    <h3 class="subsection-title">DoG Filter Visualization</h3>
+                    <div class="text-content">
+                        <p>Created DoG filters by convolving a 2D Gaussian with finite difference operators. These filters combine smoothing and differentiation in a single operation, making edge detection both cleaner and more efficient.</p>
+                    </div>
+
+                    <div class="image-grid">
+                        <div class="image-container">
+                            <img src="images/dog_x_filter.png" alt="DoG x filter" class="result-image" style="image-rendering: pixelated; width: 300px; height: auto;">
+                            <p class="image-caption">DoG<sub>x</sub> filter - Derivative of Gaussian in x-direction</p>
+                        </div>
+                        <div class="image-container">
+                          <img src="images/dog_y_filter.png" alt="DoG y filter" class="result-image" style="image-rendering: pixelated; width: 300px; height: auto;">
+                          <p class="image-caption">DoG<sub>y</sub> filter - Derivative of Gaussian in y-direction</p>
+                      </div>
+                    </div>
+                </div>
+
+                <div class="subsection">
+                    <h3 class="subsection-title">Noise Reduction Comparison</h3>
+                    <div class="text-content">
+                        <p>Comparing edge detection results shows the dramatic improvement from Gaussian smoothing. The DoG approach produces identical results to the two-step process (blur then differentiate) but with a single convolution operation.</p>
+                    </div>
+
+                    <div class="image-grid">
+                        <div class="image-container">
+                            <img src="images/edges_original.png" alt="Original noisy edges" class="result-image">
+                            <p class="image-caption">Original edges (noisy from finite differences)</p>
+                        </div>
+                        <div class="image-container">
+                            <img src="images/edges_smoothed.png" alt="Smoothed edges" class="result-image">
+                            <p class="image-caption">Gaussian-smoothed edges (clean and well-defined)</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="subsection">
+                    <h3 class="subsection-title">Key Insights</h3>
+                    <div class="text-content">
+                        <p>The DoG filter experiments reveal several important principles:</p>
+                        <ul>
+                            <li><strong>Noise suppression:</strong> Gaussian smoothing dramatically reduces noise in edge detection</li>
+                            <li><strong>Mathematical equivalence:</strong> DoG filters produce identical results to sequential blur-then-differentiate operations</li>
+                            <li><strong>Computational efficiency:</strong> Single DoG convolution is faster than two separate operations</li>
+                            <li><strong>Scale-space analysis:</strong> DoG filters form the foundation for multi-scale edge detection algorithms</li>
+                        </ul>
+
+                        <p>This approach bridges basic convolution concepts with advanced computer vision techniques, demonstrating how mathematical theory translates into practical image processing solutions.</p>
+                    </div>
+                </div>
+            </section>
+
+            <section class="content-section">
+                <h2 class="section-title">Part 2: Fun with Frequencies!</h2>
+            </section>
+
+            <section class="content-section">
+                <h2 class="section-title">Part 2.1: Image Sharpening</h2>
+
+                <div class="text-content">
+                    <p>The unsharp masking technique enhances image sharpness by amplifying high-frequency details. The process works by subtracting a blurred (low-pass filtered) version from the original image to isolate high frequencies, then adding these enhanced details back to the original.</p>
+
+                    <p>The mathematical formulation is: <strong>Sharpened = Original + α × (Original - Blurred)</strong>, where α controls the sharpening strength.</p>
+                </div>
+
+                <div class="subsection">
+                    <h3 class="subsection-title">Taj Mahal Sharpening Process</h3>
+                    <div class="text-content">
+                        <p>Applied the unsharp masking technique to the Taj Mahal image, demonstrating the complete process from original through blurred, high-frequency extraction, to final sharpened result.</p>
+                    </div>
+
+                    <div class="image-grid">
+                        <div class="image-container">
+                            <img src="images/taj_original.png" alt="Original Taj Mahal" class="result-image">
+                            <p class="image-caption">Original Taj Mahal image</p>
+                        </div>
+                        <div class="image-container">
+                            <img src="images/taj_blurred.png" alt="Blurred Taj Mahal" class="result-image">
+                            <p class="image-caption">Gaussian blurred version (low-pass)</p>
+                        </div>
+                    </div>
+
+                    <div class="image-grid">
+                        <div class="image-container">
+                            <img src="images/taj_sharpened.png" alt="Sharpened Taj Mahal" class="result-image">
+                            <p class="image-caption">Sharpened result using unsharp masking</p>
+                        </div>
+                        <div class="image-container">
+                            <img src="images/taj.png" alt="High frequency component" class="result-image">
+                            <p class="image-caption">High frequency component (Original - Blurred)</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="subsection">
+                    <h3 class="subsection-title">Evaluation: Blur and Re-sharpen</h3>
+                    <div class="text-content">
+                        <p>To evaluate the technique, I took a sharp image, artificially blurred it, then attempted to recover sharpness. This demonstrates both the capabilities and limitations of unsharp masking.</p>
+
+                        <p><strong>Observations:</strong> While unsharp masking can enhance perceived sharpness, it cannot fully recover details lost through blurring. The technique works best for enhancing existing details rather than recreating lost information.</p>
+                    </div>
+                </div>
+            </section>
+
+            <section class="content-section">
+                <h2 class="section-title">Part 2.2: Hybrid Images</h2>
+
+                <div class="text-content">
+                    <p>Hybrid images exploit the dual nature of human visual perception: high frequencies dominate when viewing up close, while low frequencies become prominent at distance. By combining the low-frequency content of one image with the high-frequency content of another, we create images that change interpretation based on viewing distance.</p>
+                </div>
+
+                <div class="subsection">
+                    <h3 class="subsection-title">Derek + Nutmeg: Complete Process</h3>
+                    <div class="text-content">
+                        <p>This example demonstrates the full hybrid image creation process, including frequency domain analysis. The low-frequency component comes from Nutmeg (σ = 5.0), while the high-frequency component comes from Derek (σ = 3.0).</p>
+                    </div>
+
+                    <div class="image-grid">
+                        <div class="image-container">
+                            <img src="images/nutmeg_aligned.jpg" alt="Nutmeg original" class="result-image">
+                            <p class="image-caption">Nutmeg (Low-frequency source)</p>
+                        </div>
+                        <div class="image-container">
+                            <img src="images/DerekPicture_aligned.jpg" alt="Derek original" class="result-image">
+                            <p class="image-caption">Derek (High-frequency source)</p>
+                        </div>
+                    </div>
+
+                    <div class="image-grid single">
+                        <div class="image-container">
+                            <img src="images/hybrid_nutmeg_derek.png" alt="Derek Nutmeg hybrid" class="result-image">
+                            <p class="image-caption">Hybrid Result: Nutmeg (close) + Derek (far)</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="subsection">
+                    <h3 class="subsection-title">Frequency Domain Analysis</h3>
+                    <div class="text-content">
+                        <p>Fourier transform analysis reveals how the hybrid image combines frequency components from both sources. The log magnitude spectra show the filtering effects clearly.</p>
+                    </div>
+
+                    <div class="image-grid">
+                        <div class="image-container">
+                            <img src="images/fft_nutmeg_original.png" alt="Nutmeg FFT" class="result-image">
+                            <p class="image-caption">FFT: Original Nutmeg</p>
+                        </div>
+                        <div class="image-container">
+                            <img src="images/fft_derek_original.png" alt="Derek FFT" class="result-image">
+                            <p class="image-caption">FFT: Original Derek</p>
+                        </div>
+                    </div>
+
+                    <div class="image-grid">
+                        <div class="image-container">
+                            <img src="images/fft_nutmeg_lowpass.png" alt="Nutmeg low-pass FFT" class="result-image">
+                            <p class="image-caption">FFT: Nutmeg Low-pass Filtered</p>
+                        </div>
+                        <div class="image-container">
+                            <img src="images/fft_derek_highpass.png" alt="Derek high-pass FFT" class="result-image">
+                            <p class="image-caption">FFT: Derek High-pass Filtered</p>
+                        </div>
+                    </div>
+
+                    <div class="image-grid single">
+                        <div class="image-container">
+                            <img src="images/fft_hybrid_nutmeg_derek.png" alt="Hybrid FFT" class="result-image">
+                            <p class="image-caption">FFT: Final Hybrid Image</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="subsection">
+                    <h3 class="subsection-title">Additional Hybrid Images</h3>
+                    <div class="text-content">
+                        <p>Created multiple hybrid images exploring different themes: human-animal morphing and expression changes. Each demonstrates the distance-dependent perception effect.</p>
+                    </div>
+
+                    <div class="image-grid">
+                        <div class="image-container">
+                            <img src="images/philip2_aligned.jpg" alt="Philip2 original" class="result-image">
+                            <p class="image-caption">Philip2 (Low-frequency)</p>
+                        </div>
+                        <div class="image-container">
+                            <img src="images/cat_aligned.jpg" alt="Cat original" class="result-image">
+                            <p class="image-caption">Cat (High-frequency)</p>
+                        </div>
+                    </div>
+
+                    <div class="image-grid single">
+                        <div class="image-container">
+                            <img src="images/hybrid_philip2_cat.png" alt="Philip Cat hybrid" class="result-image">
+                            <p class="image-caption">Human-Animal Hybrid: Philip2 + Cat</p>
+                        </div>
+                    </div>
+
+                    <div class="image-grid">
+                        <div class="image-container">
+                            <img src="images/zuckerberg_aligned_cropped.jpg" alt="Zuckerberg original" class="result-image">
+                            <p class="image-caption">Zuckerberg (Low-frequency)</p>
+                        </div>
+                        <div class="image-container">
+                            <img src="images/bezos_aligned_cropped.jpg" alt="Bezos original" class="result-image">
+                            <p class="image-caption">Bezos (High-frequency)</p>
+                        </div>
+                    </div>
+
+                    <div class="image-grid single">
+                        <div class="image-container">
+                            <img src="images/hybrid_zuckerberg_bezos.png" alt="Zuckerberg Bezos hybrid" class="result-image">
+                            <p class="image-caption">Tech CEO Hybrid: Zuckerberg + Bezos</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <section class="content-section">
+                <h2 class="section-title">Part 2.3: Gaussian and Laplacian Stacks</h2>
+
+                <div class="text-content">
+                    <p>Gaussian and Laplacian stacks form the foundation for multiresolution image processing. Unlike pyramids, stacks maintain constant image dimensions across all levels, enabling frequency-selective operations without resolution loss.</p>
+                </div>
+
+                <div class="subsection">
+                    <h3 class="subsection-title">Implementation Approach</h3>
+                    <div class="text-content">
+                        <p>The Gaussian stack applies progressive blurring without downsampling. The Laplacian stack captures frequency bands by computing differences between consecutive Gaussian levels, plus the final residual.</p>
+
+                        <ul>
+                            <li><strong>Gaussian Stack:</strong> G₀, G₁, G₂, ..., Gₙ (progressively blurred)</li>
+                            <li><strong>Laplacian Stack:</strong> L₀=G₀-G₁, L₁=G₁-G₂, ..., Lₙ=Gₙ (frequency bands + residual)</li>
+                            <li><strong>Reconstruction:</strong> Original = L₀ + L₁ + ... + Lₙ</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="subsection">
+                    <h3 class="subsection-title">Apple and Orange Stacks</h3>
+                    <div class="text-content">
+                        <p>Applied stack decomposition to the classic apple and orange images, demonstrating how different frequency bands capture various levels of detail.</p>
+                    </div>
+
+                    <div class="image-grid">
+                        <div class="image-container">
+                            <img src="images/apple.jpeg" alt="Original Apple" class="result-image">
+                            <p class="image-caption">Original Apple</p>
+                        </div>
+                        <div class="image-container">
+                            <img src="images/orange.jpeg" alt="Original Orange" class="result-image">
+                            <p class="image-caption">Original Orange</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <section class="content-section">
+                <h2 class="section-title">Part 2.4: Multiresolution Blending (The Oraple!)</h2>
+
+                <div class="text-content">
+                    <p>Multiresolution blending creates seamless image composites by blending images separately at each frequency band. This approach, pioneered by Burt and Adelson (1983), eliminates visible seams that plague simple alpha blending.</p>
+                </div>
+
+                <div class="subsection">
+                    <h3 class="subsection-title">The Classic Oraple</h3>
+                    <div class="text-content">
+                        <p>The apple-orange blend demonstrates the power of multiresolution techniques. By using a gradient mask and blending at multiple frequency levels, we achieve natural-looking transitions impossible with simple methods.</p>
+                    </div>
+
+                    <div class="image-grid">
+                        <div class="image-container">
+                            <img src="images/oraple_vertical_gradient.png" alt="Vertical Oraple" class="result-image">
+                            <p class="image-caption">Vertical Seam Blend (Gradient Mask)</p>
+                        </div>
+                        <div class="image-container">
+                            <img src="images/oraple_horizontal_gradient.png" alt="Horizontal Oraple" class="result-image">
+                            <p class="image-caption">Horizontal Seam Blend (Gradient Mask)</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="subsection">
+                    <h3 class="subsection-title">Custom Blending: Pizza + Clock</h3>
+                    <div class="text-content">
+                        <p>Created a custom blend combining pizza and clock images using the same multiresolution technique. The smooth gradient mask ensures natural transitions between disparate objects.</p>
+                    </div>
+
+                    <div class="image-grid single">
+                        <div class="image-container">
+                            <img src="images/pizza_clock_multiresolution.jpg" alt="Pizza Clock blend" class="result-image">
+                            <p class="image-caption">Multiresolution Blend: Pizza + Clock</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="subsection">
+                    <h3 class="subsection-title">Algorithm Insights</h3>
+                    <div class="text-content">
+                        <p>The multiresolution blending process reveals several key insights:</p>
+
+                        <ul>
+                            <li><strong>Frequency-selective blending:</strong> Different frequency bands can have different blend ratios</li>
+                            <li><strong>Mask smoothing:</strong> Gaussian blurring of the mask creates natural transitions</li>
+                            <li><strong>Edge preservation:</strong> High frequencies maintain sharp details while low frequencies handle smooth regions</li>
+                            <li><strong>Perceptual quality:</strong> Results appear more natural than simple alpha blending</li>
+                        </ul>
+
+                        <p>This technique forms the foundation for modern image compositing, panorama stitching, and computational photography applications.</p>
+                    </div>
+                </div>
+            </section>
+
+            <section class="content-section">
+                <h2 class="section-title">Key Learnings & Conclusions</h2>
+
+                <div class="text-content">
+                    <p>This project provided deep insights into the frequency domain nature of images and human visual perception:</p>
+
+                    <ul>
+                        <li><strong>Frequency decomposition is fundamental:</strong> Understanding images as combinations of different frequency components enables powerful processing techniques</li>
+                        <li><strong>Human perception is frequency-dependent:</strong> Distance affects which frequencies dominate our visual interpretation</li>
+                        <li><strong>Multiresolution processing is superior:</strong> Operating at multiple scales simultaneously produces more natural results than single-scale approaches</li>
+                        <li><strong>Implementation matters:</strong> Careful attention to boundary conditions, data types, and numerical precision is crucial for quality results</li>
+                    </ul>
+
+                    <p><strong>Most Important Learning:</strong> The realization that effective image processing requires understanding both the mathematical foundations (convolution, frequency domain) and the perceptual aspects (how humans see and interpret images). The combination of rigorous implementation with perceptual insights leads to techniques that are both theoretically sound and practically effective.</p>
+                </div>
+            </section>
+
+            <div id="footer-container"></div>
+        </main>
+    </div>
+
+    <script src="../js/component-loader.js"></script>
+    <script>
+        // Update project-specific data after components load
+        document.addEventListener('DOMContentLoaded', () => {
+            setTimeout(() => {
+                componentLoader.loadProjectHeader({
+                    title: 'Fun with Filters and Frequencies',
+                    breadcrumb: 'Project 2',
+                    publishDate: 'September 25, 2025',
+                    description: 'A comprehensive exploration of image processing techniques: from scratch convolution implementations and edge detection to hybrid images and multiresolution blending. Covers frequency domain analysis, unsharp masking, and the classic "oraple" using Gaussian and Laplacian stacks.'
+                });
+            }, 100);
+        });
+    </script>
+</body>
+</html>

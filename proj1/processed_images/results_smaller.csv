@@ -1,0 +1,4 @@
+image,method,dx_g,dy_g,dx_r,dy_r,time_sec,out_path
+cathedral,edges_ed_pyramid,2,5,3,12,0.085257,processed_images/cathedral.jpg
+monastery,edges_ed_pyramid,2,-3,2,3,0.071721,processed_images/monastery.jpg
+tobolsk,edges_ed_pyramid,3,3,3,6,0.070167,processed_images/tobolsk.jpg

@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Project 0 - Dolly Zoom | Philip Juenemann</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../css/shared.css">
+    <style>
+        /* Page-specific styles */
+        .gifs-section {
+            margin-top: 60px;
+        }
+
+        .gif-item {
+            margin-bottom: 60px;
+        }
+
+        .gif-item:last-child {
+            margin-bottom: 0;
+        }
+
+        .gif-image {
+            width: 35%;
+            height: auto;
+            border-radius: 8px;
+            margin: 0 auto 16px auto;
+            border: 1px solid var(--gray-200);
+            display: block;
+        }
+
+        .gif-title {
+            font-size: 1.25rem;
+            font-weight: 500;
+            color: var(--black);
+            margin-bottom: 8px;
+        }
+
+        .gif-description {
+            font-size: 0.875rem;
+            color: var(--gray-600);
+            line-height: 1.5;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div id="sidebar-container"></div>
+
+        <main class="main-content">
+            <div id="project-header"></div>
+
+            <section class="gifs-section">
+                <h2 class="section-title">Project Gallery</h2>
+
+                <div class="gif-item">
+                    <h3 class="gif-title">Part 1: Philip Juenemann</h3>
+                    <p class="gif-description">A self-portrait demonstrating the dolly zoom effect, where the camera moves forward while simultaneously zooming out to maintain the subject's size while dramatically changing the background perspective.</p>
+                    <div class="section-divider"></div>
+                    <img src="philip_juenemann.GIF" alt="Philip Juenemann Dolly Zoom" class="gif-image" />
+                </div>
+
+                <div class="gif-item">
+                    <h3 class="gif-title">Part 2: Fountain</h3>
+                    <p class="gif-description">The dolly zoom effect applied to a fountain scene, creating a disorienting visual effect where the background appears to stretch and compress while the central subject remains stable.</p>
+                    <div class="section-divider"></div>
+                    <img src="brunnen.GIF" alt="Fountain Dolly Zoom" class="gif-image" />
+                </div>
+
+                <div class="gif-item">
+                    <h3 class="gif-title">Part 3: Statue</h3>
+                    <p class="gif-description">A statue captured with the dolly zoom technique, showcasing how the effect can create dramatic tension and focus attention on the central subject while the environment transforms around it.</p>
+                    <div class="section-divider"></div>
+                    <img src="statue.GIF" alt="Statue Dolly Zoom" class="gif-image" />
+                </div>
+            </section>
+
+            <div id="footer-container"></div>
+        </main>
+    </div>
+
+    <script src="../js/component-loader.js"></script>
+    <script>
+        // Update project-specific data after components load
+        document.addEventListener('DOMContentLoaded', () => {
+            setTimeout(() => {
+                componentLoader.loadProjectHeader({
+                    title: 'Dolly Zoom',
+                    breadcrumb: 'Project 0',
+                    publishDate: 'August 31, 2025',
+                    description: 'A computer vision project exploring the dolly zoom effect through creative GIF animations and image processing techniques.'
+                });
+            }, 100);
+        });
+    </script>
+</body>
+</html>
