@@ -110,3 +110,11 @@ proj3A/try3-tower/*
 proj3A/try4-tower/*.png
 proj3A/try5-field/*.png
 proj3A/try6-tower/*.png
+
+
+# Project 4
+proj4/aruco_images/*
+proj4/datasets/*
+proj4/results_nerf_robust/*
+proj4/single_aruco_images/*
+proj4/single_aruco_images_2/*
