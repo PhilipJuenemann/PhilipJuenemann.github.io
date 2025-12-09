@@ -635,12 +635,254 @@
                 </div>
             </section>
 
+
+            <!-- PART B: TRAINING DIFFUSION MODELS -->
             <section class="content-section">
-                <h2 class="section-title">Conclusion</h2>
+                <h2 class="section-title">Part B: Training Diffusion Models</h2>
                 <div class="text-content">
-                    <p>In this project, we explored the capabilities of diffusion models, starting from basic denoising loops to advanced techniques like Classifier-Free Guidance (CFG), SDEdit for image-to-image translation, and inpainting. We demonstrated how diffusion models can be controlled to generate high-quality images from text prompts, how they can "hallucinate" details to project sketches onto the natural image manifold, and how they can be manipulated to create optical illusions like visual anagrams and hybrid images. These experiments highlight the flexibility and power of diffusion models not just for generation, but for creative image editing and manipulation tasks.</p>
+                    <p>In this part, we train our own flow matching model on the MNIST dataset.</p>
                 </div>
             </section>
+
+            <section class="content-section">
+                <h2 class="section-title">Part 1: Training a Single-Step Denoising UNet</h2>
+                <div class="text-content">
+                    <p>We begin by training a simple one-step denoiser. Given a noisy image <i>z</i>, we train a denoiser <i>D<sub>&theta;</sub></i> to map <i>z</i> to a clean image <i>x</i> by optimizing an L2 loss.</p>
+                </div>
+
+                <!-- 1.1 Implementing the UNet -->
+                <div class="subsection">
+                    <h3 class="subsection-title">1.1 Implementing the UNet</h3>
+                    <div class="text-content">
+                        <p>The denoiser is implemented as a UNet, consisting of downsampling and upsampling blocks with skip connections. The architecture includes standard operations like Conv2d, BatchNorm2d, GELU, ConvTranspose2d, and AvgPool2d. The model uses composed operations to increase depth without changing tensor dimensions, except where downsampling or upsampling is explicitly performed.</p>
+                    </div>
+                </div>
+
+                <!-- 1.2 Using the UNet to Train a Denoiser -->
+                <div class="subsection">
+                    <h3 class="subsection-title">1.2 Using the UNet to Train a Denoiser</h3>
+                    <div class="text-content">
+                        <p>To train the denoiser, we generate training pairs (<i>z</i>, <i>x</i>) by adding noise to clean MNIST digits. The noising process is defined as <i>z = x + &sigma; * &epsilon;</i>, where <i>&epsilon;</i> is random Gaussian noise.</p>
+                    </div>
+
+                    <p class="code-section-title">Noising Process Visualization</p>
+                    <div class="image-container" style="width: 100%; max-width: 1000px; margin: 20px auto;">
+                        <img src="deliverablesB/1_2_noising_process_5_images.png" alt="Noising Process Visualization" class="result-image" style="width: 100%; max-width: 100%;">
+                        <p class="image-caption">Visualization of the noising process with varying noise levels (&sigma;).</p>
+                    </div>
+                </div>
+
+                <!-- 1.2.1 Training -->
+                <div class="subsection">
+                    <h3 class="subsection-title">1.2.1 Training</h3>
+                    <div class="text-content">
+                        <p>We trained the UNet denoiser on the MNIST dataset for 5 epochs using an Adam optimizer (lr=1e-4) and a batch size of 256. The hidden dimension D was set to 128.</p>
+                    </div>
+
+                    <p class="code-section-title">Training Loss Curve</p>
+                    <div class="image-container" style="width: 100%; max-width: 600px; margin: 20px auto;">
+                        <img src="deliverablesB/1_2_1_loss_curve.png" alt="Training Loss Curve" class="result-image" style="width: 100%; max-width: 100%;">
+                        <p class="image-caption">Training loss curve over iterations.</p>
+                    </div>
+
+                    <p class="code-section-title">Denoising Results (Epoch 1 vs Epoch 5)</p>
+                    <div class="image-container" style="width: 100%; max-width: 800px; margin: 20px auto;">
+                        <img src="deliverablesB/1_2_1_denoised_epochs1and5.png" alt="Denoising Results Epoch 1 vs 5" class="result-image" style="width: 100%; max-width: 100%;">
+                        <p class="image-caption">Sample denoising results on the test set (&sigma;=0.5) after Epoch 1 and Epoch 5.</p>
+                    </div>
+                </div>
+
+                <!-- 1.2.2 Out-of-Distribution Testing -->
+                <div class="subsection">
+                    <h3 class="subsection-title">1.2.2 Out-of-Distribution Testing</h3>
+                    <div class="text-content">
+                        <p>The denoiser was trained with a specific noise level (&sigma;=0.5). Here, we test its performance on noise levels it wasn't explicitly trained for.</p>
+                    </div>
+
+                    <p class="code-section-title">Out-of-Distribution Results</p>
+                    <div class="image-container" style="width: 100%; max-width: 1000px; margin: 20px auto;">
+                        <img src="deliverablesB/1_2_2_out_of_distribution_testing.png" alt="Out of Distribution Testing" class="result-image" style="width: 100%; max-width: 100%;">
+                        <p class="image-caption">Denoising results on test set digits with varying, out-of-distribution noise levels.</p>
+                    </div>
+                </div>
+
+                <!-- 1.2.3 Denoising Pure Noise -->
+                <div class="subsection">
+                    <h3 class="subsection-title">1.2.3 Denoising Pure Noise</h3>
+                    <div class="text-content">
+                        <p>We repeated the training process, but this time trying to denoise pure noise (<i>&sigma;=1.0</i>, essentially starting from a blank canvas) to a clean image.</p>
+                    </div>
+
+                    <p class="code-section-title">Training Loss Curve (Pure Noise)</p>
+                    <div class="image-container" style="width: 100%; max-width: 600px; margin: 20px auto;">
+                        <img src="deliverablesB/1_2_3_training_loss_curve.png" alt="Training Loss Curve Pure Noise" class="result-image" style="width: 100%; max-width: 100%;">
+                        <p class="image-caption">Training loss curve for denoising pure noise.</p>
+                    </div>
+
+                    <p class="code-section-title">Pure Noise Denoising Results</p>
+                    <div class="image-container" style="width: 100%; max-width: 800px; margin: 20px auto;">
+                        <img src="deliverablesB/1_2_3_epoch1and5_example1.png" alt="Pure Noise Denoising Results" class="result-image" style="width: 100%; max-width: 100%;">
+                        <p class="image-caption">Sample results of denoising pure noise after Epoch 1 and Epoch 5.</p>
+                    </div>
+
+                    <p class="code-section-title">Observed Patterns Analysis</p>
+                    <div class="text-content">
+                        <p>The images generated from pure noise resemble blurry, averaged amalgams of various digits rather than distinct numbers. Instead of producing a clear '3' or '7', the output looks like a superposition of multiple digits from the training set.</p>
+                        <p>This phenomenon occurs because the model minimizes Mean Squared Error (MSE) without any conditioning signal. In the absence of information guiding it toward a specific digit, the optimal strategy to minimize MSE is to predict the mean of the possible outcomes. This effectively results in the model outputting the "centroid" or average of the MNIST dataset's digit distribution—a blurry, ambiguous shape that minimizes the expected squared distance to all training examples.</p>
+                    </div>
+                </div>
+            </section>
+
+            <section class="content-section">
+                <h2 class="section-title">Part 2: Training a Flow Matching Model</h2>
+                <div class="text-content">
+                    <p>We just saw that one-step denoising does not work well for generative tasks. Instead, we need to iteratively denoise the image, and we will do so with flow matching. Here, we will iteratively denoise an image by training a UNet model to predict the "flow" from our noisy data to clean data. In our flow matching setup, we sample a pure noise image <i>z</i> and generate a realistic image <i>x</i>.</p>
+                </div>
+
+                <!-- 2.1 Adding Time Conditioning to UNet -->
+                <div class="subsection">
+                    <h3 class="subsection-title">2.1 Adding Time Conditioning to UNet</h3>
+                    <div class="text-content">
+                        <p>We inject a scalar timestep <i>t</i> into our UNet to condition it. This allows the model to know "where" it is in the denoising process. We use Fully-Connected Blocks (FCBlocks) to modulate the features in the UNet based on the timestep.</p>
+                    </div>
+
+                    <p class="code-section-title">UNet Architecture with Conditioning</p>
+                    <div class="image-container" style="width: 100%; max-width: 800px; margin: 20px auto;">
+                        <img src="deliverablesB/part2_1_Unet_architecture.png" alt="Time Conditioned UNet Architecture" class="result-image" style="width: 100%; max-width: 100%;">
+                        <p class="image-caption">Diagram of the Time-Conditioned UNet.</p>
+                    </div>
+                    <div class="image-container" style="width: 100%; max-width: 600px; margin: 20px auto;">
+                        <img src="deliverablesB/part2_1_fcblock.png" alt="FCBlock Diagram" class="result-image" style="width: 100%; max-width: 100%;">
+                        <p class="image-caption">Diagram of the FCBlock used for injecting conditioning signals.</p>
+                    </div>
+                </div>
+
+                <!-- 2.2 Training the UNet -->
+                <div class="subsection">
+                    <h3 class="subsection-title">2.2 Training the Time-Conditioned UNet</h3>
+                    <div class="text-content">
+                        <p>We train the time-conditioned UNet to predict the flow (velocity) from noisy data to clean data. We pick a random image <i>x</i>, a random timestep <i>t</i>, generate noisy image <i>x<sub>t</sub></i>, and train the model to approximate the vector field velocity.</p>
+                    </div>
+
+                    <p class="code-section-title">Training Algorithm</p>
+                    <div class="image-container" style="width: 100%; max-width: 800px; margin: 20px auto;">
+                        <img src="deliverablesB/part2_2_traning_algorithm.png" alt="Training Algorithm Diagram" class="result-image" style="width: 100%; max-width: 100%;">
+                        <p class="image-caption">Algorithm B.1: Training the time-conditioned UNet.</p>
+                    </div>
+
+                    <p class="code-section-title">Training Loss Curve</p>
+                    <div class="image-container" style="width: 100%; max-width: 600px; margin: 20px auto;">
+                        <img src="deliverablesB/part2_2_training_loss.png" alt="Time-Conditioned Training Loss" class="result-image" style="width: 100%; max-width: 100%;">
+                        <p class="image-caption">Training loss curve for the time-conditioned UNet.</p>
+                    </div>
+                </div>
+
+                <!-- 2.3 Sampling from the UNet -->
+                <div class="subsection">
+                    <h3 class="subsection-title">2.3 Sampling from the Time-Conditioned UNet</h3>
+                    <div class="text-content">
+                        <p>Using the trained UNet, we can perform iterative denoising (sampling) to generate images from pure noise.</p>
+                    </div>
+
+                    <p class="code-section-title">Sampling Algorithm</p>
+                    <div class="image-container" style="width: 100%; max-width: 800px; margin: 20px auto;">
+                        <img src="deliverablesB/part2_3_sampling_algorithm.png" alt="Sampling Algorithm Diagram" class="result-image" style="width: 100%; max-width: 100%;">
+                        <p class="image-caption">Algorithm B.2: Sampling from the time-conditioned UNet.</p>
+                    </div>
+
+                    <p class="code-section-title">Sampling Results (Epochs 1, 5, 10)</p>
+                    <div class="image-grid" style="grid-template-columns: repeat(3, 1fr);">
+                        <div class="image-container">
+                            <img src="deliverablesB/part2_3_epoch1.png" alt="Sampling Epoch 1" class="result-image">
+                            <p class="image-caption">Epoch 1</p>
+                        </div>
+                        <div class="image-container">
+                            <img src="deliverablesB/part2_3_epoch5.png" alt="Sampling Epoch 5" class="result-image">
+                            <p class="image-caption">Epoch 5</p>
+                        </div>
+                        <div class="image-container">
+                            <img src="deliverablesB/part2_3_epoch10.png" alt="Sampling Epoch 10" class="result-image">
+                            <p class="image-caption">Epoch 10</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 2.4 Adding Class-Conditioning to UNet -->
+                <div class="subsection">
+                    <h3 class="subsection-title">2.4 Adding Class-Conditioning to UNet</h3>
+                    <div class="text-content">
+                        <p>To improve generation quality and control, we add class conditioning. This involves adding more FCBlocks to inject a class embedding (one-hot vector) alongside the time embedding. We also use dropout (p=0.1) on the class conditioning during training to enable classifier-free guidance.</p>
+                    </div>
+                </div>
+
+                <!-- 2.5 Training the Class-Conditioned UNet -->
+                <div class="subsection">
+                    <h3 class="subsection-title">2.5 Training the Class-Conditioned UNet</h3>
+                    <div class="text-content">
+                        <p>Training is similar to the time-only case, but with the additional class conditioning input and periodic unconditional training (dropout).</p>
+                    </div>
+
+                    <p class="code-section-title">Class-Conditional Training Diagram</p>
+                    <div class="image-container" style="width: 100%; max-width: 800px; margin: 20px auto;">
+                        <img src="deliverablesB/part2_5_class_conditional_training.png" alt="Class Conditional Training Diagram" class="result-image" style="width: 100%; max-width: 100%;">
+                        <p class="image-caption">Algorithm B.3: Training the class-conditioned UNet.</p>
+                    </div>
+
+                    <p class="code-section-title">Training Loss Curve</p>
+                    <div class="image-container" style="width: 100%; max-width: 600px; margin: 20px auto;">
+                        <img src="deliverablesB/part2_5_training_loss.png" alt="Class-Conditioned Training Loss" class="result-image" style="width: 100%; max-width: 100%;">
+                        <p class="image-caption">Training loss curve for the class-conditioned UNet.</p>
+                    </div>
+                </div>
+
+                <!-- 2.6 Sampling from the Class-Conditioned UNet -->
+                <div class="subsection">
+                    <h3 class="subsection-title">2.6 Sampling from the Class-Conditioned UNet</h3>
+                    <div class="text-content">
+                        <p>We sample using classifier-free guidance with &gamma;=5.0. This allows us to generate specific digits with higher quality.</p>
+                    </div>
+
+                    <p class="code-section-title">Sampling Algorithm (Class-Conditioned)</p>
+                    <div class="image-container" style="width: 100%; max-width: 800px; margin: 20px auto;">
+                        <img src="deliverablesB/part2_6_class_conditional_sampling.png" alt="Class Conditional Sampling Diagram" class="result-image" style="width: 100%; max-width: 100%;">
+                        <p class="image-caption">Algorithm B.4: Sampling from the class-conditioned UNet.</p>
+                    </div>
+
+                    <p class="code-section-title">Sampling Results (Epochs 1, 5, 10)</p>
+                    <div class="image-grid" style="grid-template-columns: repeat(3, 1fr);">
+                        <div class="image-container">
+                            <img src="deliverablesB/part2_6_1_epoch1.png" alt="Class Cond Sampling Epoch 1" class="result-image">
+                            <p class="image-caption">Epoch 1</p>
+                        </div>
+                        <div class="image-container">
+                            <img src="deliverablesB/part2_6_1_epoch5.png" alt="Class Cond Sampling Epoch 5" class="result-image">
+                            <p class="image-caption">Epoch 5</p>
+                        </div>
+                        <div class="image-container">
+                            <img src="deliverablesB/part2_6_1_epoch10.png" alt="Class Cond Sampling Epoch 10" class="result-image">
+                            <p class="image-caption">Epoch 10</p>
+                        </div>
+                    </div>
+
+                    <p class="code-section-title">Removing the Learning Rate Scheduler</p>
+                    <div class="text-content">
+                        <p>When training without the exponential learning rate scheduler, I found that using a constant learning rate of 2e-3 worked best.</p>
+                        <p>The scheduler originally began at 1e-2 to enable rapid early learning, then gradually reduced it (by a factor of ~0.794 each epoch) so the model could refine its weights and reach a stable state.</p>
+                        <p>Keeping a fixed moderate rate (5e-3) throughout training proved problematic - the optimizer kept making steps that were too large in later stages, preventing convergence to a quality solution. This resulted in worse generated samples at epoch 10, even though the training loss appeared lower.</p>
+                        <p><strong>What Changed:</strong></p>
+                        <ul>
+                            <li>Eliminated the exponential learning rate scheduler</li>
+                            <li>Applied a fixed learning rate of 2e-3 throughout training</li>
+                            <li>Kept the same total training time (20 epochs)</li>
+                        </ul>
+                    </div>
+                    <div class="image-container" style="width: 100%; max-width: 800px; margin: 20px auto;">
+                        <img src="deliverablesB/part2_6_2_epoch10-no-scheduler.png" alt="Sampling without Scheduler" class="result-image" style="width: 100%; max-width: 100%;">
+                        <p class="image-caption">Sampling results after 10 epochs without a learning rate scheduler.</p>
+                    </div>
+                </div>
+            </section>
+
 
 
 
